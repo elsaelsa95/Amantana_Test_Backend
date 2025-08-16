@@ -3,17 +3,17 @@ const { User } = require('./../models');
 
 const authentication = async (req, res, next) => {
     try {
-        const { acesstoken } = req.headers;
-        console.log(acesstoken, "acc")
-        if (!acesstoken) {  
-            res.status(401).json({ message: `Error authentication1` });
+        const { accesstoken } = req.headers;
+
+        if (!accesstoken) {  
+            return res.status(401).json({ message: `Error authentication` });
         }
   
-        const payload = verifyToken(acesstoken) 
+        const payload = verifyToken(accesstoken) 
   
         const user = await User.findByPk(payload.id)
         if (!user) {
-            res.status(401).json({ message: `Error authentication2` });
+            return res.status(401).json({ message: `Error authentication` });
         }
       
         req.user ={
@@ -24,7 +24,7 @@ const authentication = async (req, res, next) => {
         }
         next()
     } catch (error) {
-        res.status(500).json({ message: `Internal Server Error` });
+        return res.status(500).json({ message: `Internal Server Error` });
     }
 }
 
