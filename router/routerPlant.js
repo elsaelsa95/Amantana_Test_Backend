@@ -8,4 +8,6 @@ router.get("/plants/:id", authorization(["admin", "farmer", "agronomist"]), Cont
 router.put("/plants/:id", authorization(["admin"]), Controller.updatePlantById)
 router.delete("/plants/:id", authorization(["admin"]), Controller.deletePlantById)
 
+router.patch("/plants/:id", authorization(["farmer"]), Controller.addingPlantForFarmer)
+
 module.exports = router;

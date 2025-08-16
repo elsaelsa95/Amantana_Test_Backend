@@ -94,6 +94,25 @@ class Controller {
             return res.status(500).json({ message: error.message });
         }
     }
+
+    static async addingPlantForFarmer(req,res){
+        try {
+            const farmerId = req.user.id
+            const id = req.params.id
+
+            const plant= await Plant.findOne({where: {id}});
+            if (!plant) {
+                return res.status(404).json({message: "Plant not found"});
+            }
+
+            await plant.update({UserId : farmerId});
+            return res.status(200).json(plant)
+            }
+            catch (error) {
+            return res.status(500).json({ message: error.message });
+
+        }
+    }
 }
 
 module.exports = Controller
