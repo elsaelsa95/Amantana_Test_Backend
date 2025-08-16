@@ -29,7 +29,11 @@ module.exports = {
       },
       role: {
         allowNull: false,
-        type: Sequelize.STRING
+        type: Sequelize.ENUM('admin', 'farmer', 'agronomist')
+      },
+      verified: {
+        defaultValue:false,
+        type: Sequelize.BOOLEAN
       },
       createdAt: {
         allowNull: false,
