@@ -3,17 +3,17 @@ const { User } = require('./../models');
 
 const authentication = async (req, res, next) => {
     try {
-        const { acesstoken } = req.headers;
+        const { accesstoken } = req.headers;
 
-        if (!acesstoken) {  
-            return res.status(401).json({ message: `Error authentication1` });
+        if (!accesstoken) {  
+            return res.status(401).json({ message: `Error authentication` });
         }
   
-        const payload = verifyToken(acesstoken) 
+        const payload = verifyToken(accesstoken) 
   
         const user = await User.findByPk(payload.id)
         if (!user) {
-            return res.status(401).json({ message: `Error authentication2` });
+            return res.status(401).json({ message: `Error authentication` });
         }
       
         req.user ={

@@ -37,7 +37,12 @@ class Controller {
             const farmerId = req.user.id;
             const id = req.params.id;
 
-            const treatment = await Treatment.create({UserId: farmerId, PlantId:id})
+            const myPlant= await Plant.findOne({where: {UserId: farmerId, id}});
+            if (!myPlant) {
+                return res.status(404).json({ message: "It is not your plant" });
+            }
+
+            await Treatment.create({UserId: farmerId, PlantId:id})
             return res.status(201).json({ message: `Treatment for plant with ID ${id} has been created` })
 
         } catch (error) {
