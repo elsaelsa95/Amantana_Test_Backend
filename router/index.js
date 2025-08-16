@@ -2,6 +2,7 @@ const router = require("express").Router();
 const routerUser = require("./routerUser");
 const routerFarmer = require("./routerFarmer");
 const routerAgronomist = require("./routerAgronomist");
+const routerPlant = require("./routerPlant")
 const authentication = require("./../middleware/aunthentication")
 const authorization = require("./../middleware/authorization")
 
@@ -14,5 +15,7 @@ router.use(routerFarmer)
 
 router.use("/agronomist",  authorization(["admin", "agronomist"]))
 router.use(routerAgronomist)
+
+router.use(routerPlant)
 
 module.exports = router;
