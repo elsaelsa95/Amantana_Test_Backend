@@ -1,4 +1,4 @@
-const { Plant } = require("./../models")
+const { Plant, Treatment} = require("./../models")
 const Validator  = require('validatorjs')
 
 class Controller {
@@ -110,7 +110,6 @@ class Controller {
             }
             catch (error) {
             return res.status(500).json({ message: error.message });
-
         }
     }
 }

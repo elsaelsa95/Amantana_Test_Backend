@@ -15,7 +15,10 @@ module.exports = (sequelize, DataTypes) => {
           allowNull:true
         },
         onDelete:"SET NULL"
-      })
+      }),
+      Plant.hasOne(models.Treatment), {
+        foreignKey:"PlantId"
+      }
     }
   }
   Plant.init({

@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Plant), {
         foreignKey: "UserId"
       }
+      User.hasOne(models.Treatment), {
+        foreignKey:"UserId"
+      }
     }
   }
   User.init({
