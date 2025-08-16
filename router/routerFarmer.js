@@ -9,4 +9,8 @@ router.get("/farmer/:id/treatment", authorization(["farmer"]), Controller.readTr
 router.patch("/farmer/:id/treatment", authorization(["farmer"]), Controller.updateTreatment)
 router.delete("/farmer/:id/treatment", authorization(["farmer"]), Controller.deleteTreatment)
 
+router.post("/farmer/:id/growth", authorization(["farmer"]), Controller.createGrowthLog)
+router.get("/farmer/:id/growth", authorization(["farmer"]), Controller.readGrowthLog)
+router.get("/farmer/:id/growthPeriod", authorization(["farmer"]), Controller.readGrowthLogByPeriod)
+
 module.exports = router;
