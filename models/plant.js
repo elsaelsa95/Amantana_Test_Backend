@@ -16,9 +16,12 @@ module.exports = (sequelize, DataTypes) => {
         },
         onDelete:"SET NULL"
       }),
-      Plant.hasOne(models.Treatment), {
+      Plant.hasOne(models.Treatment, {
         foreignKey:"PlantId"
-      }
+      }),
+      Plant.hasOne(models.GrowthLog, {
+        foreignKey:"PlantId"
+      })
     }
   }
   Plant.init({
