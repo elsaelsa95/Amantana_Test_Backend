@@ -105,6 +105,10 @@ class Controller {
                 return res.status(404).json({message: "Plant not found"});
             }
 
+            if(plant.UserId) {
+                return res.status(403).json({message: "Plant has owner"});
+            }
+
             await plant.update({UserId : farmerId});
             return res.status(200).json(plant)
             }

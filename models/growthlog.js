@@ -20,6 +20,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   GrowthLog.init({
+    name: DataTypes.STRING,
     date: DataTypes.DATE,
     height: DataTypes.INTEGER,
     diameter: DataTypes.INTEGER,
