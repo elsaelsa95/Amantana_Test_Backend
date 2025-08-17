@@ -23,7 +23,7 @@ class Controller {
 
             const myPlant= await Plant.findOne({where: {UserId: farmerId, id}});
             if (!myPlant) {
-                return res.status(404).json({ message: "It is not your plant" });
+                return res.status(403).json({ message: "It is not your plant" });
             }
             const {plantedDate} = req.body; 
 
@@ -139,7 +139,7 @@ class Controller {
             return res.status(201).json(createLog)
 
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
     }
     static async readGrowthLog(req,res){
@@ -156,7 +156,7 @@ class Controller {
             return res.status(201).json(readLog)
 
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
     }
     static async readGrowthLogByPeriod(req, res){
@@ -191,7 +191,7 @@ class Controller {
 
             return res.status(200).json({message : `average height = ${averageLog(heightLog)} & average diameter ${averageLog(diameterLog)}`})
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
     }
     static async compareGrowth(req,res) {
@@ -246,8 +246,7 @@ class Controller {
                     `Your Plant : height ${heightLogYourPlant} & diameter ${diameterLogYourPlant}, Other Farmer Plant : height ${heightLogOtherPlant} & diameter ${diameterLogOtherPlant}`}
             )
         } catch (error) {
-            console.log(error)
-            res.status(500).json({ message: error.message });
+            return res.status(500).json({ message: error.message });
         }
     }
     static async top5(req,res) {

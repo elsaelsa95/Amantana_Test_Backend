@@ -19,6 +19,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasOne(models.GrowthLog, {
         foreignKey: "UserId"
       })
+      User.hasMany(models.Post, {
+        foreignKey:"UserId"
+      })
     }
   }
   User.init({
