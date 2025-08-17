@@ -13,5 +13,6 @@ router.post("/farmer/:id/growth", authorization(["farmer"]), Controller.createGr
 router.get("/farmer/:id/growth", authorization(["farmer"]), Controller.readGrowthLog)
 router.get("/farmer/:id/growthPeriod", authorization(["farmer"]), Controller.readGrowthLogByPeriod)
 router.post("/farmer/compareGrowth", authorization(["farmer"]), Controller.compareGrowth)
+router.get("/farmer/top5", Controller.top5)
 
 module.exports = router;

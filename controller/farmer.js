@@ -1,4 +1,4 @@
-const { Op } = require("sequelize");
+const { Op, fn, col } = require("sequelize");
 const { Plant, Treatment, GrowthLog} = require("./../models")
 const Validator  = require('validatorjs')
 
@@ -248,6 +248,24 @@ class Controller {
         } catch (error) {
             console.log(error)
             res.status(500).json({ message: error.message });
+        }
+    }
+    static async top5(req,res) {
+        try {
+            const top5 = await GrowthLog.findAll({
+                attributes:[
+                    "PlantId",
+                    "UserId",
+                    "name",
+                    [fn("AVG", col("height")), "avgHeight"],
+                ],
+                group:[ "PlantId", "UserId", "name"],
+                order: [["avgHeight", "DESC", ]],
+                limit:5,
+            })
+            return res.status(200).json(top5)
+        } catch (error) {
+            return res.status(500).json({ message: error.message });
         }
     }
 }
