@@ -60,6 +60,8 @@ npm run dev
 ## Fitur
 - Register dan login
 - Middleware Role-based Authorization
+- OTP Verification untuk Farmer Baru
+- Alternatif Verifikasi Sederhana (Agronomist)
 - Tools tambahan : bcryptjs, validatorjs, dotenv, jsonwebtoken, sequelize
 - Admin dapat mengelola data Tanaman (CRUD)
 - Tanaman bisa dimiliki oleh seorang farmer atau tidak dimiliki siapa pun
@@ -639,4 +641,19 @@ POST/farmer/midtrans
 
 - Notes :
 "You need setting Payment notification URL with your ngrok url in Midtrans Dahsboard to trigger endpoint POST/midtrans/notification and update balance in database"
+```
+
+### 26. Verify Account via OTP
+```bash
+POST/verify
+
+- Body :
+    {
+        "email": "youremail@gmail.com"
+        "otp": "142997"
+    }
+- Response 200 :
+    {
+        "message": "Your Account is Verified Now"
+    }
 ```
