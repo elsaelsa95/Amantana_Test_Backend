@@ -22,6 +22,9 @@ module.exports = (sequelize, DataTypes) => {
       User.hasMany(models.Post, {
         foreignKey:"UserId"
       })
+      User.hasOne(models.Saldo, {
+        foreignKey:"UserId"
+      })
     }
   }
   User.init({
@@ -29,7 +32,8 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     username: DataTypes.STRING,
     role: DataTypes.ENUM('admin', 'farmer', 'agronomist'),
-    verified: DataTypes.BOOLEAN
+    verified: DataTypes.BOOLEAN,
+    balance: DataTypes.INTEGER,
   }, {
     sequelize,
     modelName: 'User',

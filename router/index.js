@@ -4,9 +4,11 @@ const routerFarmer = require("./routerFarmer");
 const routerAgronomist = require("./routerAgronomist");
 const routerPlant = require("./routerPlant")
 const routerPost = require("./routerPost")
+const routerMidtrans = require("./routerMidtrans")
 const authentication = require("./../middleware/aunthentication")
 const authorization = require("./../middleware/authorization")
 
+router.use(routerMidtrans)
 router.use(routerUser);
 
 router.use(authentication)

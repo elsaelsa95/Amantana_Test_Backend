@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Controller = require("./../controller/farmer");
+const ControllerMidtrans = require("./../controller/midtrans")
 const authorization = require("../middleware/authorization")
 
 router.get("/farmer", Controller.myPlant);
@@ -14,5 +15,7 @@ router.get("/farmer/:id/growth", authorization(["farmer"]), Controller.readGrowt
 router.get("/farmer/:id/growthPeriod", authorization(["farmer"]), Controller.readGrowthLogByPeriod)
 router.post("/farmer/compareGrowth", authorization(["farmer"]), Controller.compareGrowth)
 router.get("/farmer/top5", Controller.top5)
+
+router.post("/farmer/midtrans", authorization(["farmer"]), ControllerMidtrans.midtrans)
 
 module.exports = router;

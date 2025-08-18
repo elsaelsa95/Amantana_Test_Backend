@@ -3,6 +3,10 @@ const { User } = require('./../models');
 
 const authentication = async (req, res, next) => {
     try {
+        if (req.path.startsWith("/midtrans")) {
+            return next();
+        }
+
         const { accesstoken } = req.headers;
 
         if (!accesstoken) {  
