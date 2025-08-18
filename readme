@@ -1,0 +1,642 @@
+## About this project
+Restfull API for management admin, farmer, and agronomist.
+
+## Requirement
+- Node.js
+- PostgreSQL
+- DBeaver
+- Midtrans account (sandbox)
+
+## Setup and installation
+```bash
+git clone https://github.com/elsaelsa95/Amantana_Test_Backend.git
+```
+```bash
+cd Amantana_Test_Backend
+```
+
+Install package :
+```bash
+npm i
+```
+
+Create Database :
+```bash
+npx sequelize-cli db:create
+```
+Migrate Database :
+```bash
+npx sequelize-cli db:migrate 
+```
+Environment Configuration :
+```bash
+Create file .env (check file .env-template)
+```
+
+Run the development server:
+```bash
+npm run dev
+```
+
+## Database Structure
+<p>
+    <img src="./Struktur Database.jpeg">
+</p>
+
+## Technology and Library
+- bcryptjs
+- cors
+- dotenv
+- express
+- jsonwebtoken
+- midtrans-client
+- pg
+- sequelize
+- uuid
+- validatorjs
+- nodemon
+- sequelize-cli
+
+## Fitur
+- Register dan login
+- Middleware Role-based Authorization
+- Tools tambahan : bcryptjs, validatorjs, dotenv, jsonwebtoken, sequelize
+- Admin dapat mengelola data Tanaman (CRUD)
+- Tanaman bisa dimiliki oleh seorang farmer atau tidak dimiliki siapa pun
+- Farmer dapat mencatat tanggal tanam untuk setiap tanaman yang baru saja mereka tambahkan ke daftar kepemilikan
+- Perawatan dapat dikelola (CRUD).
+- Validasi: Farmer hanya boleh CRUD perawatan pada tanaman yang dimilikinya.
+- Model Growth Log untuk mencatat tinggi, diameter, dan tanggal.
+- Hanya bisa 1 log per hari per Tanaman per Farmer.
+- Endpoint untuk melihat rata-rata pertumbuhan Tanaman dalam periode tertentu.
+- Endpoint untuk membandingkan pertumbuhan antar Tanaman yang dimiliki Farmer dengan Farmer lain. Contoh: farmer A ingin membandingkan tanaman kaktusnya dengan kaktus yang dimiliki farmer B.
+- Endpoint untuk melihat 5 tanaman dengan pertumbuhan terbaik (global ranking)
+- User dapat membuat post (caption, gambar, waktu).
+- Endpoint untuk melihat feed dari seluruh user, disortir berdasarkan waktu post terbaru.
+- System topup credit 
+
+
+## Endpoint Documentation
+### 1. Register
+```bash
+POST/register
+
+- Body :
+    {
+        "email": "admin@mail.com",
+        "password": "admin",
+        "username": "admin",
+        "role": "admin"
+    }
+
+- Response 201 :
+    {
+        "message": "admin has been created as admin"
+    }
+```
+### 2. Login
+```bash
+POST/login
+
+- Body :
+    {
+        "email": "admin@mail.com",
+        "password": "admin",
+    }
+
+- Response 200 :
+    {
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+    "findUser": {
+        "id": 1,
+        "email": "admin@gmail.com",
+        "password": "$2b$10$/W/M4FNB7RJOZ8SJ.DgtseAndbr...",
+        "username": "admin",
+        "role": "admin",
+        "verified": false,
+        "balance": 0,
+        "createdAt": "2025-08-17T06:07:56.325Z",
+        "updatedAt": "2025-08-17T06:07:56.325Z"
+}
+```
+### 3. Admin Membuat Tanaman Baru
+```bash
+POST/plants
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body :
+    {
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "A"
+    }
+
+- Response 201 :
+    {
+        "message": "Jagung has been added to database"
+    }
+```
+
+### 4. User Melihat Daftar Tanaman
+```bash
+GET/plants
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+[
+    {
+        "id": 3,
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "B",
+        "UserId": 3,
+        "plantedDate": null,
+        "createdAt": "2025-08-17T06:13:27.757Z",
+        "updatedAt": "2025-08-17T06:56:28.310Z"
+    },
+    {
+        "id": 2,
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "B",
+        "UserId": 2,
+        "plantedDate": "2025-08-17T00:00:00.000Z",
+        "createdAt": "2025-08-17T06:13:26.825Z",
+        "updatedAt": "2025-08-17T07:01:05.066Z"
+    },
+]
+```
+
+### 5. User Melihat Detail Tanaman
+```bash
+GET/plants/:id
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    {
+        "id": 2,
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "B",
+        "UserId": 2,
+        "plantedDate": "2025-08-17T00:00:00.000Z",
+        "createdAt": "2025-08-17T06:13:26.825Z",
+        "updatedAt": "2025-08-17T07:01:05.066Z"
+    }
+```
+
+### 6. Admin Mengedit Tanaman
+```bash
+PUT/plants/:id
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body :
+    {
+        "name": "Padi",
+        "species": "Oryza Sativa",
+        "location": "A"
+    }
+
+- Response 200 :
+    {
+        "id": 5,
+        "name": "Padi",
+        "species": "Oryza Sativa",
+        "location": "A",
+        "UserId": null,
+        "plantedDate": null,
+        "createdAt": "2025-08-18T11:12:52.689Z",
+        "updatedAt": "2025-08-18T11:17:51.802Z"
+    }
+```
+
+### 7. Admin Menghapus Tanaman
+```bash
+DELETE/plants/:id
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    {
+        "message": "Plant deleted successfully"
+    }
+```
+
+### 8. Petani Menambahkan Tanaman ke dalam List Miliknya
+```bash
+PATCH/plants/:id
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    {
+        "id": 4,
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "B",
+        "UserId": 2,
+        "plantedDate": null,
+        "createdAt": "2025-08-18T11:11:05.625Z",
+        "updatedAt": "2025-08-18T11:22:48.032Z"
+    }
+```
+
+### 9. Petani Melihat Daftar Tanaman Miliknya
+```bash
+GET/farmer
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    [
+    {
+        "id": 2,
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "B",
+        "UserId": 2,
+        "plantedDate": "2025-08-17T00:00:00.000Z",
+        "createdAt": "2025-08-17T06:13:26.825Z",
+        "updatedAt": "2025-08-17T07:01:05.066Z"
+    },
+    {
+        "id": 4,
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "B",
+        "UserId": 2,
+        "plantedDate": null,
+        "createdAt": "2025-08-18T11:11:05.625Z",
+        "updatedAt": "2025-08-18T11:22:48.032Z"
+    }
+]
+```
+
+### 10. Petani Menambahkan Tanggal Tanam
+```bash
+PATCH/farmer/:id
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body : 
+    {
+        plantedDate: "2025-08-17"
+    }
+- Response 200 :
+    {
+        "id": 4,
+        "name": "Jagung",
+        "species": "Zea Mays",
+        "location": "B",
+        "UserId": 2,
+        "plantedDate": "2025-08-17T00:00:00.000Z",
+        "createdAt": "2025-08-18T11:11:05.625Z",
+        "updatedAt": "2025-08-18T11:53:36.720Z"
+    }
+```
+
+### 11. Petani Membuat Perawatan Baru
+```bash
+POST/farmer/:id/treatment
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 201 :
+    {
+        "message": "Treatment for plant with ID 2 has been created"
+    }
+```
+
+### 12. Petani Melihat Perawatan Tanaman
+```bash
+GET/farmer/:id/treatment
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    {
+        "id": 2,
+        "firstTreatment": null,
+        "lastTreatment": null,
+        "fertilizer": null,
+        "note": null,
+        "UserId": 2,
+        "PlantId": 2,
+        "createdAt": "2025-08-18T11:55:49.261Z",
+        "updatedAt": "2025-08-18T11:55:49.261Z"
+    }
+```
+
+### 13. Petani Menambahkan Data Perawatan Tanaman
+```bash
+PATCH/farmer/:id/treatment
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body :
+    {
+        "firstTreatment": "2025-08-17",
+        "lastTreatment": "2025-08-17",
+        "fertilizer": "pupuk kandang",
+        "note": "subur"
+    }
+- Response 200 :
+    {
+        "message": "Treatment has been updated"
+    }
+```
+
+### 14. Petani Menghapus Data Perawatan Tanaman
+```bash
+DELETE/farmer/:id/treatment
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    {
+        "message": "Treatment has been deleted"
+    }
+```
+
+### 15. Petani Membuat Data Pertumbuhan Tanaman
+```bash
+POST/farmer/:id/growth
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body :
+    {
+        "height": 15,
+        "diameter": 3
+    }
+
+- Response 200 :
+    {
+        "id": 5,
+        "name": "Jagung",
+        "height": 15,
+        "diameter": 3,
+        "date": "2025-08-17T17:00:00.000Z",
+        "UserId": 2,
+        "PlantId": 2,
+        "updatedAt": "2025-08-18T12:16:57.155Z",
+        "createdAt": "2025-08-18T12:16:57.155Z"
+    }
+```
+
+### 16. Petani Melihat Data Pertumbuhan Tanaman
+```bash
+GET/farmer/:id/growth
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    [
+        {
+            "id": 1,
+            "name": "Jagung",
+            "date": "2025-08-16T17:00:00.000Z",
+            "height": 15,
+            "diameter": 3,
+            "UserId": 2,
+            "PlantId": 2,
+            "createdAt": "2025-08-17T07:07:45.691Z",
+            "updatedAt": "2025-08-17T07:07:45.691Z"
+        },
+        {
+            "id": 5,
+            "name": "Jagung",
+            "date": "2025-08-17T17:00:00.000Z",
+            "height": 15,
+            "diameter": 3,
+            "UserId": 2,
+            "PlantId": 2,
+            "createdAt": "2025-08-18T12:16:57.155Z",
+            "updatedAt": "2025-08-18T12:16:57.155Z"
+        }
+    ]
+```
+
+### 17. Petani Melihat Data Pertumbuhan Tanaman Periode Tertentu
+```bash
+GET/farmer/:id/growthPeriod
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body :
+    {
+        "startDate": "2025-08-17",
+        "endDate": "2025-08-19"
+    }
+
+- Response 200 :
+    {
+        "message": "average height = 15 & average diameter 3"
+    }
+```
+
+### 18. Petani Membandingkan Pertumbuhan Tanaman
+```bash
+POST/farmer/:id/compareGrowth
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body :
+    {
+        "startDate": "2025-08-17",
+        "endDate": "2025-08-19",
+        "name": "Jagung",
+        "otherFarmerId": 3
+    }
+
+- Response 200 :
+    {
+        "message": "Your Plant : height 15,15 & diameter 3,3, Other Farmer Plant : height 15 & diameter 3"
+    }
+```
+
+### 19. Top 5 Pertumbuhan Terbaik
+```bash
+GET/farmer/top5
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Response 200 :
+    [
+        {
+            "PlantId": 2,
+            "UserId": 2,
+            "name": "Jagung",
+            "avgHeight": "15.0000000000000000"
+        },
+        {
+            "PlantId": 3,
+            "UserId": 3,
+            "name": "Jagung",
+            "avgHeight": "15.0000000000000000"
+        }
+    ]
+```
+
+### 20. User Membuat Post
+```bash
+POST/post
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body : 
+    {
+        "title": "Panen Jagung",
+        "image": "https://gkmdblog.s3.ap-southeast-1.amazonaws.com/wp-content/uploads/2024/01/01194513/Blog-Panen-Jagung.jpg",
+        "caption": "Day 2"
+    }
+
+- Response 201 :
+    {
+        "id": 4,
+        "title": "Panen Jagung",
+        "image": "https://gkmdblog.s3.ap-southeast-1.amazonaws.com/wp-content/uploads/2024/01/01194513/Blog-Panen-Jagung.jpg",
+        "caption": "Day 2",
+        "date": "8/18/2025",
+        "UserId": 2,
+        "updatedAt": "2025-08-18T12:41:09.527Z",
+        "createdAt": "2025-08-18T12:41:09.527Z"
+    }
+```
+
+### 21. User Melihat List Post
+```bash
+GET/post
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    
+- Response 200 :
+    [
+        {
+            "id": 1,
+            "title": "Jagung",
+            "image": "https://cdn.rri.co.id/berita/Singaraja/o/1747189072640-WhatsApp_Image_2025-05-14_at_10.11.51/1gy2tqzslxyv2sx.jpeg",
+            "caption": "Day 1",
+            "date": "8/17/2025",
+            "UserId": 2,
+            "createdAt": "2025-08-17T09:21:53.701Z",
+            "updatedAt": "2025-08-17T09:21:53.701Z"
+        },
+        {
+            "id": 3,
+            "title": "Promo 17",
+            "image": "https://thumb.tvonenews.com/thumbnail/2025/08/16/68a025ecd5157-promo-17-agustus-hut-ke-80-ri-kuliner_665_374.jpg",
+            "caption": "Promo Kemerdekaan",
+            "date": "8/17/2025",
+            "UserId": 1,
+            "createdAt": "2025-08-17T09:24:46.478Z",
+            "updatedAt": "2025-08-17T09:24:46.478Z"
+        },
+        ...
+    ]
+```
+
+### 22. User Melihat Detail Post
+```bash
+GET/post/:id
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+    
+- Response 200 :
+    {
+        "id": 1,
+        "title": "Jagung",
+        "image": "https://cdn.rri.co.id/berita/Singaraja/o/1747189072640-WhatsApp_Image_2025-05-14_at_10.11.51/1gy2tqzslxyv2sx.jpeg",
+        "caption": "Day 1",
+        "date": "8/17/2025",
+        "UserId": 2,
+        "createdAt": "2025-08-17T09:21:53.701Z",
+        "updatedAt": "2025-08-17T09:21:53.701Z"
+    }
+```
+
+### 23. User Mengedit Post
+```bash
+PUT/post
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body : 
+    {
+        "title": "Panen Jagung Manis",
+        "image": "https://gkmdblog.s3.ap-southeast-1.amazonaws.com/wp-content/uploads/2024/01/01194513/Blog-Panen-Jagung.jpg",
+        "caption": "Day 3"
+    }
+
+- Response 200 :
+    {
+        "id": 4,
+        "title": "Panen Jagung Manis",
+        "image": "https://gkmdblog.s3.ap-southeast-1.amazonaws.com/wp-content/uploads/2024/01/01194513/Blog-Panen-Jagung.jpg",
+        "caption": "Day 3",
+        "date": "8/18/2025",
+        "UserId": 2,
+        "createdAt": "2025-08-18T12:41:09.527Z",
+        "updatedAt": "2025-08-18T12:44:58.948Z"
+    }
+```
+
+### 24. User Menghapus Post
+```bash
+DELETE/post/:id
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+
+- Response 200 :
+    {
+        "message": "Post has been deleted"
+    }
+```
+
+### 25. Petani Top up via Midtrans
+```bash
+POST/farmer/midtrans
+
+- Headers:
+    accesstoken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+
+- Body :
+    {
+        gross_amount: 10000
+    }
+- Response 200 :
+    {
+        "message": "Midtrans_token : 357731d1...., 
+        redirect_url : https://app.sandbox.midtrans.com/snap/v3/redirection/357731d1..."
+    }
+
+- Notes :
+"You need setting Payment notification URL with your ngrok url in Midtrans Dahsboard to trigger endpoint POST/midtrans/notification and update balance in database"
+```

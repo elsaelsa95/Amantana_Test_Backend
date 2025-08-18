@@ -23,7 +23,13 @@ module.exports = {
       },
       UserId:{
         allowNull: true,
-        type:Sequelize.INTEGER
+        type:Sequelize.INTEGER,
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
+        onUpdate: 'CASCADE',
+        onDelete: 'SET NULL'
       },
       plantedDate:{
         allowNull: true,
