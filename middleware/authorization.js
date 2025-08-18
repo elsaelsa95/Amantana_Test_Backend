@@ -3,6 +3,9 @@ const { User } = require("../models")
 const authorization = (roles = []) => {
     return async (req,res, next) => {
         try {
+            if (req.path.startsWith("/midtrans")) {
+                return next();
+            }
             const id = req.user.id
             const findId = await User.findOne({where:{id}})
 

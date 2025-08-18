@@ -3,9 +3,12 @@ const routerUser = require("./routerUser");
 const routerFarmer = require("./routerFarmer");
 const routerAgronomist = require("./routerAgronomist");
 const routerPlant = require("./routerPlant")
+const routerPost = require("./routerPost")
+const routerMidtrans = require("./routerMidtrans")
 const authentication = require("./../middleware/aunthentication")
 const authorization = require("./../middleware/authorization")
 
+router.use(routerMidtrans)
 router.use(routerUser);
 
 router.use(authentication)
@@ -17,5 +20,7 @@ router.use("/agronomist",  authorization(["admin", "agronomist"]))
 router.use(routerAgronomist)
 
 router.use(routerPlant)
+
+router.use(routerPost)
 
 module.exports = router;
